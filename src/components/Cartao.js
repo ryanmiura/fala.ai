@@ -1,15 +1,14 @@
 import { Image, StyleSheet, Text, TouchableOpacity } from "react-native"
 
 
-const Cartao = (props,navigation) => {
+const Cartao = (props) => {
     const nome = props.nome
     const data = props.data
+    const func = props.onPress
 
-    const goToModificarPesquisa = () =>{
-        props.navigation.navigate('ModificarPesquisa')
-    }
+   
     return(
-        <TouchableOpacity style={estilos.view} onPress={goToModificarPesquisa}>
+        <TouchableOpacity style={estilos.view} onPress={func}>
             <Image style={estilos.imagem} source={require('../assets/image.png')}></Image>
             <Text style={estilos.texto1}>{nome}</Text>
             <Text style={estilos.texto2}>{data}</Text>

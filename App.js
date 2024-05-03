@@ -6,6 +6,7 @@ import RecuperarSenha from "./src/screens/RecuperarSenha"
 import Home from "./src/screens/Home"
 import NovaPesquisa from "./src/screens/NovaPesquisa"
 import ModificarPesquisa from "./src/screens/ModificarPesquisa"
+import Cartao from "./src/components/Cartao"
 
 const Stack = createStackNavigator()
 
@@ -53,6 +54,15 @@ const App = () => {
                 <Stack.Screen 
                     name="NovaPesquisa" 
                     component={NovaPesquisa} 
+                    options={{
+                        headerStyle:{backgroundColor: '#2B1D62',},
+                        headerTintColor:'#fff',
+                        headerTitleStyle: {fontFamily:'AveriaLibre-Bold'},
+                    }
+                }/>
+                <Stack.Screen 
+                    name="Cartao" 
+                    component={Cartao} 
                     options={{
                         headerStyle:{backgroundColor: '#2B1D62',},
                         headerTintColor:'#fff',

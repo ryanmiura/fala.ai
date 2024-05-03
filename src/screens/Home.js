@@ -6,7 +6,10 @@ const Home = (props) => {
     const goToNovaPesquisa = () =>{
         props.navigation.navigate('NovaPesquisa')
     }
-    
+    const goToModificarPesquisa = () =>{
+        props.navigation.navigate('ModificarPesquisa')
+    }
+
     return(
         <View style={estilos.view}>
             <View style={estilos.viewSearch}>
@@ -18,7 +21,7 @@ const Home = (props) => {
 
             <View style={estilos.viewCards}>
                 <ScrollView contentContainerStyle={{alignItems:'center',marginLeft:25}} horizontal={true} showsHorizontalScrollIndicator={false}>
-                    <Cartao nome="SECOMP 2023" data="10/10/2023" ></Cartao>
+                    <Cartao nome="SECOMP 2023" data="10/10/2023" onPress={goToModificarPesquisa}></Cartao>
                     <Cartao nome="SECOMP 2022" data="10/10/2022"></Cartao>
                     <Cartao nome="SECOMP 2021" data="10/10/2021"></Cartao>
                     <Cartao nome="SECOMP 2020" data="10/10/2020"></Cartao>
