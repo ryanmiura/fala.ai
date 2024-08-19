@@ -1,19 +1,38 @@
 import { View,Text, TextInput, TouchableOpacity, TextComponent,StyleSheet } from "react-native";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { useState } from "react";
+import { auth_mod } from "../firebase/config";
 
 const RecuperarSenha = (props) => {
+
+    const[email, setEmail] = useState('')
+
     const voltar = () => {
         props.navigation.goBack()
     }
+
+    const recuperar = () => {
+        
+        sendPasswordResetEmail(auth_mod, email)
+        .then((CredencialEmail) => {
+            console.log("Email de Rec enviado com sucesso: " + JSON.stringify(CredencialEmail))
+            voltar()
+        })
+        .catch((error) => {
+            console.log("Falha ao enviar email de recuperacao : " + JSON.stringify(error))
+        })
+    }
+
     return (
         <View style={estilos.view}>
             <View style={estilos.viewForms}>
                 <Text style={estilos.texto}>E-mail</Text>
-                <TextInput style={estilos.textoInput}></TextInput>
+                <TextInput style={estilos.textoInput} onChangeText={setEmail}></TextInput>
                 <Text style={estilos.textoErro}>E-mail parece ser invalido</Text>
             </View>
                 
             <View style={estilos.viewBotao}>
-                <TouchableOpacity style={estilos.botao} onPress={voltar}>
+                <TouchableOpacity style={estilos.botao} onPress={recuperar}>
                     <Text style={estilos.texto}>RECUPERAR</Text>
                 </TouchableOpacity>
             </View>

@@ -1,26 +1,43 @@
 import { View,Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth_mod } from "../firebase/config";
+import { useState } from "react";
 
 const NovaConta = (props) => {
     const voltar = () => {
         props.navigation.goBack()
     }
+    const [email, setEmail] = useState('')
+    const [senha, setSenha] = useState('')
+
+    const cadastra = () => {
+        createUserWithEmailAndPassword(auth_mod, email,senha)
+        .then((userCredential) => {
+            console.log("Usuario criado com sucesso : " + JSON.stringify(userCredential))
+            voltar()
+        })
+        .catch((error)=>{
+            console.log("Erro ao criar usuario :" + JSON.stringify(error))
+        })
+
+    }
     return (
         <View style={estilos.view}>
             <View style={estilos.viewForms}>
                 <Text style={estilos.texto} >E-mail</Text>
-                <TextInput style={estilos.textoInput}></TextInput>
+                <TextInput style={estilos.textoInput}  onChangeText={setEmail}></TextInput>
 
 
                 <Text style={estilos.texto} >Senha</Text>
-                <TextInput style={estilos.textoInput}></TextInput>
+                <TextInput style={estilos.textoInput} ></TextInput>
 
                 <Text style={estilos.texto} >Repetir senha</Text>
-                <TextInput style={estilos.textoInput}></TextInput>
+                <TextInput style={estilos.textoInput}  onChangeText={setSenha}></TextInput>
                 <Text style={estilos.textoErro}>O campo repetir senha difere da senha</Text>
             </View>
 
             <View style={estilos.viewBotao}>
-                <TouchableOpacity style={estilos.botao} onPress={voltar}>
+                <TouchableOpacity style={estilos.botao} onPress={cadastra}>
                     <Text style={estilos.texto}>CADASTRAR</Text>
                 </TouchableOpacity>
             </View>

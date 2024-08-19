@@ -1,27 +1,111 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import {TextInput } from 'react-native-paper';
+import { pesquisaCollection, storage } from "../firebase/config";
+import { useState } from "react";
+import { addDoc } from "firebase/firestore";
+import { launchCamera,launchImageLibrary } from "react-native-image-picker";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
-const NovaPesquisa = () =>{
+const NovaPesquisa = (props) =>{
+
+    const [nome, setNome] = useState('')
+    const [data, setData] = useState('')
+    const [urlFoto, setUrlFoto] = useState('')
+    const [foto, setFoto] = useState()
+
+    const voltar = () => {
+        props.navigation.goBack()
+    }
+
+    const capturarImagem = () => {
+        launchCamera({mediaType: 'photo', cameraType:'back',quality:1})
+        .then((result)=>{
+            setUrlFoto(result.assets[0].uri)
+            setFoto(result.assets[0])
+        })
+        .catch((erro)=>{
+            console.log("Erro ao adicionar foto: " + erro)
+        })
+    }
+
+    const addPesquisa = async () => {
+
+
+        const imagemNome = `${new Date().getTime()}.jpg`
+        const imagemRef = ref(storage, imagemNome)
+        const file = await fetch(urlFoto)
+        const blob = await file.blob()
+
+        uploadBytes(imagemRef, blob, {contentType:'image/jpeg'})
+        .then((result)=>{
+            console.log("Arquivo enviado com suceso")
+            getDownloadURL(imagemRef)
+            .then((url)=>{
+                console.log("URL de DOWNLOAD com sucesso: ")
+                const docPesquisa = {
+                    nome : nome ,
+                    data : data,
+                    imageUrl: url,
+                    imageNome: imagemNome
+                }
+        
+                addDoc(pesquisaCollection, docPesquisa)
+                .then((docRef)=>{
+                    console.log("Nova pesquisa add : " + docRef.id)
+                    voltar()
+
+                })
+                .catch((erro) => {
+                    console.log("Erro ao add nova pesquisa : " + erro)
+                })
+
+
+
+            })
+            .catch((erro)=>{
+                console.log("Erro ao getDownload : " + JSON.stringify.erro)
+            })
+        })
+        .catch((erro)=>{
+            console.log("Erro ao enviar imagem : " + erro)
+        })
+
+
+    }
+
+
+
     return(
         <View style={estilos.view}>
             <View style={estilos.viewForms}>
                 <Text style={estilos.texto}>Nome</Text>
-                <TextInput style={estilos.textInput}></TextInput>
+                <TextInput style={estilos.textInput} onChangeText={setNome}></TextInput>
                 <Text style={estilos.textoErro}>Preencha o nome da pesquisa</Text>
 
                 <Text style={estilos.texto}>Data</Text>  
                 <View style={estilos.data}>
-                    <TextInput style={estilos.textInput} right={<TextInput.Icon icon="calendar"/>}></TextInput>
+                    <TextInput style={estilos.textInput} onChangeText={setData} right={<TextInput.Icon icon="calendar"/>}></TextInput>
                 </View>
                 <Text style={estilos.textoErro}>Preencha a data</Text>
                 <Text style={estilos.texto}>Imagem</Text>
-                <View style={estilos.viewImagem}>
-                    <Text style={estilos.textoImg}>Camera/Galeria de imagens</Text>
-                </View>
+
+                <TouchableOpacity onPress={capturarImagem}>
+                    {
+                        urlFoto ?
+                            <Image source={{uri: urlFoto}} style={{ width:100, height:70}} />
+                        :
+                            <View style={estilos.viewImagem}>
+                                <Text style={estilos.textoImg}>Adicionar Imagem</Text>
+                            </View> 
+
+                    }
+                       
+                </TouchableOpacity>
+                
             </View>
 
             <View style={estilos.viewBotao}>
-                <TouchableOpacity style={estilos.botao}>
+                <TouchableOpacity style={estilos.botao} onPress={addPesquisa}>
                     <Text style={estilos.texto}>CADASTRAR</Text>
                 </TouchableOpacity>
             </View>

@@ -1,18 +1,28 @@
 import { StyleSheet, TouchableOpacity, View , Text} from "react-native";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const AcaoPesquisa = () => {
+const AcaoPesquisa = (props) => {
+
+    const {item} = props.route.params
+    
+    const goToModificarPesquisa = () =>{
+        props.navigation.navigate('ModificarPesquisa',{item: item})
+    }
+    const goToColeta = () =>{
+        props.navigation.navigate('Coleta')
+    }
+
     return(
         <View style={estilos.view}>
-            <TouchableOpacity style={estilos.botao}>
+            <TouchableOpacity style={estilos.botao} onPress={goToModificarPesquisa}>
                 <Icon name="file-edit-outline" size={100} color="#FFF"></Icon>
                 <Text style={estilos.texto}>Modificar</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={estilos.botao}>
+            <TouchableOpacity style={estilos.botao} onPress={goToColeta}>
                 <Icon name="text-box-check-outline" size={100} color="#FFF"></Icon>
                 <Text style={estilos.texto}>Coletar Dados</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={estilos.botao}>
+            <TouchableOpacity style={estilos.botao} >
                 <Icon name="radar" size={100} color="#FFF"></Icon>
                 <Text style={estilos.texto}>Relatorio</Text>
             </TouchableOpacity>

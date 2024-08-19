@@ -1,9 +1,40 @@
+import { useState } from "react";
 import { View,Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth_mod } from "../firebase/config";
+import { useDispatch } from "react-redux";
+import { reducerSetLogin } from "../../redux/loginSlice";
 
 const Login = (props) => {
+
+    const[email, setEmail] = useState('')
+    const[senha, setSenha] = useState('')
+
+    const dispatch = useDispatch()
+
+    const autenticar = () => {
+
+
+
+        signInWithEmailAndPassword(auth_mod, email, senha)
+        .then((CredencialUsuario)=>{
+            console.log("ID DO USUARIO : " + JSON.stringify(CredencialUsuario.user.uid))
+            console.log("Usuario Auntenticado com sucesso : " + JSON.stringify(CredencialUsuario))
+            dispatch(reducerSetLogin({email: email, senha: senha, uid: CredencialUsuario.user.uid}))
+            //goToHome()
+            goToDrawer()
+        })
+        .catch((error)=>{
+            console.log("Erro ao autenticar usuario : " + JSON.stringify(error))
+        })
+    }
+
     const goToHome = () =>{
         props.navigation.navigate('Home')
+    }
+    const goToDrawer = () =>{
+        props.navigation.navigate('Drawer')
     }
     const goToNovaConta = () =>{
         props.navigation.navigate('NovaConta')
@@ -20,14 +51,14 @@ const Login = (props) => {
 
             <View style={estilos.viewForms}>
                 <Text style={estilos.texto} >E-mail</Text>
-                <TextInput style={estilos.textInput}></TextInput>
+                <TextInput style={estilos.textInput} onChangeText={setEmail} ></TextInput>
 
 
                 <Text style={estilos.texto}>Senha</Text>
-                <TextInput style={estilos.textInput}></TextInput>
+                <TextInput style={estilos.textInput} onChangeText={setSenha} ></TextInput>
                 <Text style={estilos.textoErro}>E-mail e/ou senha invalidos.</Text>
 
-                <TouchableOpacity style={estilos.botao1} onPress={goToHome}>
+                <TouchableOpacity style={estilos.botao1} onPress={autenticar}>
                     <Text style={estilos.textBotao} >Entrar</Text>
                 </TouchableOpacity>
             </View>
